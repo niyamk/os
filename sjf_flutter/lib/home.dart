@@ -137,6 +137,9 @@ class _HomePageState extends State<HomePage> {
     art = rt;
     log("atat1 : $atat");
     for (int i = 1; i < processes.length; i++) {
+      if (processes[i].arrivalTime > ct) {
+        ct = processes[i].arrivalTime;
+      } 
       ct += processes[i].burstTime;
       tat = ct - processes[i].arrivalTime;
       wt = tat - processes[i].burstTime;
@@ -198,8 +201,12 @@ class _HomePageState extends State<HomePage> {
                         (index) => TableRow(
                           children: [
                             Center(child: Text(processes[index].name)),
-                            Center(child: Text(processes[index].arrivalTime.toString())),
-                            Center(child: Text(processes[index].burstTime.toString())),
+                            Center(
+                                child: Text(
+                                    processes[index].arrivalTime.toString())),
+                            Center(
+                                child: Text(
+                                    processes[index].burstTime.toString())),
                           ],
                         ),
                       ),
@@ -207,8 +214,27 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 SizedBox(height: spacing),
-                ElevatedButton(onPressed: _calculate, child: Text("Calculate")),
-               SizedBox(height: spacing), alphaProcesses.isEmpty
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: _calculate, child: Text("Calculate")),
+                    SizedBox(width: spacing),
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            processes.clear();
+                            alphaProcesses.clear();
+                            atat = 0;
+                            awt = 0;
+                            art = 0;
+                          });
+                        },
+                        child: Text("Reset")),
+                  ],
+                ),
+                SizedBox(height: spacing),
+                alphaProcesses.isEmpty
                     ? SizedBox()
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -229,7 +255,8 @@ class _HomePageState extends State<HomePage> {
                               alphaProcesses.length,
                               (index) => TableRow(
                                 children: [
-                                  Center(child: Text(alphaProcesses[index].name)),
+                                  Center(
+                                      child: Text(alphaProcesses[index].name)),
                                   Center(
                                     child: Text(alphaProcesses[index]
                                         .arrivalTime
@@ -266,7 +293,8 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                SizedBox(height: spacing),alphaProcesses.isEmpty
+                SizedBox(height: spacing),
+                alphaProcesses.isEmpty
                     ? SizedBox()
                     : Text(
                         "Average Turn Around Time: ${atat / processes.length} ms\nmean Average Waiting Time: ${awt / processes.length} ms\nAverage Response Time: ${art / processes.length} ms",
